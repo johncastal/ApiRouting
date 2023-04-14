@@ -3,7 +3,7 @@ from ruteo.DistanceMatrix import get_distances
 from ruteo.haversine import haversine
 
 
-def inst(grupo_k,dist_forma,tipo):
+def inst(grupo_k,dist_forma,key_googlemaps,tipo):
     Numclientes = np.shape(grupo_k)[0]
     Coordenadas = np.zeros((Numclientes,2))
     Coordenadas[:,0] = grupo_k[:,3] #latitud
@@ -15,7 +15,7 @@ def inst(grupo_k,dist_forma,tipo):
         #convertir coordenadas en lista de tuplas
         coord = list(map(tuple, Coordenadas))
         #Obtener distancias
-        dist = get_distances(coord,clientes,tipo,0)
+        dist = get_distances(coord,clientes,tipo,0,key_googlemaps)
         #print(dist)
     
     #Usando distancias de haversine

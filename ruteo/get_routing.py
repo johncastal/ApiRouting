@@ -11,7 +11,7 @@ from ruteo.Get_incum import get_incum
 
 
 
-def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,ident):
+def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,ident,key_googlemaps):
     #Instanciar problema
     #print('iniciando...')
     c = 0 #contador
@@ -53,7 +53,7 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,i
 
         
         #dist_forma='haversine'
-        dist = inst(grupo_k,dist_forma,tipo='distancia') #tiempo o distancia (haversine, google) - Distancias para solver principal
+        dist = inst(grupo_k,dist_forma,key_googlemaps,tipo='distancia') #tiempo o distancia (haversine, google) - Distancias para solver principal
         
         genetico_main = solvers(dist,seed,algoritmo) #se instancia la clase para el solver principal #################
         
@@ -73,7 +73,7 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,i
 
         elif dist_forma =='Google':
 
-            dist2 = inst(grupo_k,'Haversine',tipo='distancia') #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
+            dist2 = inst(grupo_k,'Haversine',key_googlemaps,tipo='distancia') #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
             
             genetico_ref = solvers(dist2,seed,algoritmo) # Solver para referencia
             Sol_Incumbente,Incumbente,Incum_acumulado = genetico_main.s() #Algoritmo de ruteo

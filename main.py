@@ -8,7 +8,7 @@ app = FastAPI()
 
 
 @app.get("/{datos_in}")
-def read_item(datos_in:str, n_clusters:int=1,seed:int=None,dist_forma:str='Haversine',algoritmo:str='Genetico',ident:str='prueba'):
+def read_item(datos_in:str, key_googlemaps:str, n_clusters:int=1,seed:int=None,dist_forma:str='Haversine',algoritmo:str='Genetico',ident:str='prueba'):
     datos_in = (datos_in.split(";")) #se transforma a lista
     data_base = {"coordenadas": datos_in, "parametros" : {"n_clusters":n_clusters,"seed":seed}}
     df = pd.DataFrame(data=data_base["coordenadas"],columns=["coordenadas"])
@@ -20,7 +20,7 @@ def read_item(datos_in:str, n_clusters:int=1,seed:int=None,dist_forma:str='Haver
     coor_sedes = df_sedes.to_numpy()
     coor_sedes = coor_sedes[:,1:3]
     #Generacion de rutas
-    Resumen_df,df_plot,df_rutas = routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,ident)
+    Resumen_df,df_plot,df_rutas = routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,ident,key_googlemaps)
 
     Resumen_df_json = Resumen_df.to_dict(orient='dict')
     df_plot_json =  df_plot.to_dict(orient='dict')

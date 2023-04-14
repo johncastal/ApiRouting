@@ -5,7 +5,7 @@ from ruteo.haversine import haversine
 import time
 
 
-def get_distances(origins,clientes,tipoM,cache):
+def get_distances(origins,clientes,tipoM,cache,key_googlemaps):
     if cache == 0:
         destinations = origins.copy()
         len_origins = len(clientes)
@@ -41,7 +41,7 @@ def get_distances(origins,clientes,tipoM,cache):
 
             return pd.Series([KM,Time])
         print('Obteniendo distancias desde API google...')
-        gmaps = googlemaps.Client(key='AIzaSyCSQscs9L0bC3MkmmJt-_YBUDijKGhRZW0')
+        gmaps = googlemaps.Client(key=key_googlemaps)
         start_time = time.time()
         df_f[["distance (Km)","Time (H)"]] = df.apply(get_gmaps_distance, axis=1) #obteniendo distancias
         print("Tiempo de ejecucion API google:")
