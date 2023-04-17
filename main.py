@@ -7,6 +7,10 @@ from typing import Union
 
 app = FastAPI()
 
+@app.get("/")
+def home():
+    return{"Home":"Please check the docs in /docs"}
+
 
 @app.get("/{datos_in}")
 async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,dist_forma:str='Haversine',algoritmo:str='Genetico',ident:str='prueba',key_googlemaps: Union[str, None] = None):
