@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-#from pydantic import BaseModel
 import pandas as pd
 from ruteo.clusterizacion import clusterizacion
 from ruteo.get_routing import routing
@@ -36,5 +35,4 @@ async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,dist_forma:str=
            "df_rutas" : df_rutas_json
            }
 
-    #print(out)
     return out
