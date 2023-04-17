@@ -1,14 +1,15 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+#from pydantic import BaseModel
 import pandas as pd
 from ruteo.clusterizacion import clusterizacion
 from ruteo.get_routing import routing
+from typing import Union
 
 app = FastAPI()
 
 
 @app.get("/{datos_in}")
-def read_item(datos_in:str, key_googlemaps:str, n_clusters:int=1,seed:int=None,dist_forma:str='Haversine',algoritmo:str='Genetico',ident:str='prueba'):
+async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,dist_forma:str='Haversine',algoritmo:str='Genetico',ident:str='prueba',key_googlemaps: Union[str, None] = None):
     datos_in = (datos_in.split(";")) #se transforma a lista
     data_base = {"coordenadas": datos_in, "parametros" : {"n_clusters":n_clusters,"seed":seed}}
     df = pd.DataFrame(data=data_base["coordenadas"],columns=["coordenadas"])
