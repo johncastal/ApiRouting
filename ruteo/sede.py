@@ -11,7 +11,7 @@ def sede(centroids,df_sedes):
     sedes = df_sedes
 
     l = np.shape(centroids)[0]
-    p = len(sedes['codigo'])
+    p = len(sedes['label'])
     dist_sede = np.zeros((l*p,3))
     #centroids #lon,lat
     k=0

@@ -8,7 +8,7 @@ class solvers:
         self.algoritmo = algoritmo
     
     def s(self):
-        if self.algoritmo == 'Genetico':
+        if self.algoritmo == 'Genetic':
             return genetico(self.dist,self.seed)
         elif self.algoritmo == 'VecinoCercano':
             return VecinoCercano(self.dist)

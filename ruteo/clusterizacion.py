@@ -5,16 +5,16 @@ from ruteo.sede import sede
 
 def clusterizacion(Datos,n_clusters,seed):
 
-    #Dividir sedes y clientes
-    pat = '^\d'  #comienza con un numero
-    df_clientes = Datos[Datos.codigo.str.contains(pat)]
-    df_sedes = Datos[~Datos.codigo.str.contains(pat)]
+    #split headquarters y customers
+    pat = '^\d'  #starts with a number
+    df_clientes = Datos[Datos.label.str.contains(pat)]
+    df_sedes = Datos[~Datos.label.str.contains(pat)]
 
     df_clientes = df_clientes.to_numpy()
     coor = df_clientes[:,1:3] #lon,lat
     kmeans = KMeans(n_clusters,n_init='auto',random_state=seed).fit(coor)
     centroids = kmeans.cluster_centers_
-    #Obtener sede para grupo
+    #To get headquarters
     sede_grupos = sede(centroids,df_sedes)
 
     Numclientes = np.shape(coor)[0]

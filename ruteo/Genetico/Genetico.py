@@ -7,7 +7,6 @@ from ruteo.Genetico.Mutacion  import Mutacion
 
 def genetico(dist,seed):
     #Definición de parámetros del algoritmo
-
     np.random.seed(seed)
     
     Numclientes = np.shape(dist)[0]

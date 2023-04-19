@@ -10,26 +10,19 @@ def inst(grupo_k,dist_forma,key_googlemaps,tipo):
     Coordenadas[:,1] = grupo_k[:,2] #longitud
     clientes = list(map(str, np.array(range(Numclientes))))
 
-    #Matriz de distancias API google
+    #Distance Matriz API google
     if dist_forma == 'Google':
-        #convertir coordenadas en lista de tuplas
+        
         coord = list(map(tuple, Coordenadas))
-        #Obtener distancias
-        dist = get_distances(coord,clientes,tipo,0,key_googlemaps)
-        #print(dist)
+        #To get  distances
+        dist = get_distances(coord,clientes,tipo,key_googlemaps)
+
     
-    #Usando distancias de haversine
+    #Haversine distances
     elif dist_forma == 'Haversine':
         dist = np.zeros((Numclientes,Numclientes))
         for i in range(Numclientes):
             for j in range(Numclientes):
                 dist[i,j] = haversine(Coordenadas[i,1],Coordenadas[i,0],Coordenadas[j,1],Coordenadas[j,0]) #lon,lat
-
-    #else:
-    #    # Calculo de la matriz de distancia
-    #    dist = np.zeros((Numclientes,Numclientes))
-    #    for i in range(Numclientes):
-    #        for j in range(Numclientes):
-    #            dist[i,j] = np.sqrt(pow(Coordenadas[i,0]-Coordenadas[j,0],2)+pow(Coordenadas[i,1]-Coordenadas[j,1],2)) 
     
     return dist

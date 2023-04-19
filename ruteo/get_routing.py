@@ -53,17 +53,15 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,i
 
         
         #dist_forma='haversine'
-        dist = inst(grupo_k,dist_forma,key_googlemaps,tipo='distancia') #tiempo o distancia (haversine, google) - Distancias para solver principal
-        
+        dist = inst(grupo_k,dist_forma,key_googlemaps,tipo='distance') #tiempo o distancia (haversine, google) - Distancias para solver principal
         genetico_main = solvers(dist,seed,algoritmo) #se instancia la clase para el solver principal #################
         
 
         if dist_forma == 'Haversine':
             dist2 = dist.copy()
             VecinoCercano = solvers(dist2,seed,'VecinoCercano') # Solver para referencia
-
             Sol_Incumbente,Incumbente,Incum_acumulado = genetico_main.s() #Algoritmo de ruteo
-
+            
             Sol_ref,Incum_ref = VecinoCercano.s() #Algoritmo de ruteo de referencia
             
             Incum_ref = Funcion_obj(Sol_ref,dist) #Se recalcula para comparaciones
@@ -73,7 +71,7 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,i
 
         elif dist_forma =='Google':
 
-            dist2 = inst(grupo_k,'Haversine',key_googlemaps,tipo='distancia') #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
+            dist2 = inst(grupo_k,'Haversine',key_googlemaps,tipo='distance') #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
             
             genetico_ref = solvers(dist2,seed,algoritmo) # Solver para referencia
             Sol_Incumbente,Incumbente,Incum_acumulado = genetico_main.s() #Algoritmo de ruteo
@@ -117,20 +115,20 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,i
     #Resumen resultados
     if dist_forma == 'Haversine':
         Resumen_df = pd.DataFrame(data=Resumen_out,columns=[
-            'Ruta','Cost_referencia','Cost_haversine','Ahorro_haversine(%)'
+            'Route','ref_cost','Haversine_cost','Haversine_saves(%)'
             ])
         #print('---Resumen resultados---\n')
         #print(Resumen_df.to_markdown())
     elif dist_forma =='Google':
         Resumen_df = pd.DataFrame(data=Resumen_out,columns=[
-            'Ruta','Cost_referencia', 'Cost_dist_google','Cost_haversine',
-            'Ahorro_google(%)', 'Ahorro_haversine(%)'
+            'Route','ref_cost', 'Dist_google_cost','Haversine_cost',
+            'Google_saves(%)', 'Haversine_saves(%)'
             ])
         #print('---Resumen resultados---\n')
         #print(Resumen_df.to_markdown())
 
     #Dataframe rutas
-    df_rutas = pd.DataFrame(data=rutas,columns=['No.Ruta','Solucion ruta'])
+    df_rutas = pd.DataFrame(data=rutas,columns=['No.Route','Route Solution'])
     #print(df_rutas.to_markdown())
 
     #Limpiar datos en ejecuciones parciales ()
@@ -142,8 +140,8 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,i
     if ind>0:
         coor_ruta = coor_ruta[0:ind,:]
 
-    df_plot = pd.DataFrame(data=coor_ruta,columns=['cliente','longitud','latitud','cluster','cuenta','No. cliente'])
-    df_plot['cuenta'] = df_plot['cuenta'].astype(int)
+    df_plot = pd.DataFrame(data=coor_ruta,columns=['customer','longitud','latitud','cluster','code','customer No.'])
+    df_plot['customer'] = df_plot['customer'].astype(int)
     df_plot['cluster'] = df_plot['cluster']+1
     #df_plot.to_parquet('Datos/df_plot.parquet')
     #print(df_plot.to_markdown())
