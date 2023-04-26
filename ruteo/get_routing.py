@@ -125,7 +125,7 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
         #print(Resumen_df.to_markdown())
     elif dist_forma =='Google':
         Resumen_df = pd.DataFrame(data=Resumen_out,columns=[
-            'Route','ref_cost(km)', 'Google_cost(km/H)', 'Google_saves(km/H)',
+            'Route','ref_cost(km)', 'Google_cost(km-H)', 'Google_saves(km-H)',
             'Google_saves(%)'
             ])
         #print('---Resumen resultados---\n')
