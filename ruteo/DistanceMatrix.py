@@ -47,7 +47,7 @@ def get_distances(origins,customers,typeM,key_googlemaps):
         df_f = df_f.pivot_table(index ='origins', columns ='destinations', values =["Time (H)"], sort=False).reset_index()
     else:
         df_f = df_f.pivot_table(index ='origins', columns ='destinations', values =["distance (Km)"], sort=False).reset_index()
-    print(df_f)
+    
     df_f.columns = df_f.columns.droplevel(0)
     df_f = df_f.rename_axis(None, axis=1)
     df_f = df_f.drop(df_f.columns[0], axis=1)
