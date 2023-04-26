@@ -23,7 +23,7 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
     #elif dist_forma =='Google':
     #    Resumen_out = np.zeros((n_clusters,4))
 
-    Resumen_out = np.zeros((n_clusters,4))
+    Resumen_out = np.zeros((n_clusters,5))
     Resumen_out[:,0] = np.arange(1,n_clusters+1)
 
     rutas = np.zeros((n_clusters,2),dtype=array)
@@ -69,7 +69,8 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
             Incum_ref = Funcion_obj(Sol_ref,dist) #Se recalcula para comparaciones
             Resumen_out[i,1] = round(Incum_ref,2)
             Resumen_out[i,2] = round(Incumbente,2)
-            Resumen_out[i,3] = round((Incum_ref - Incumbente)*100/Incumbente,2)
+            Resumen_out[i,3] = round((Incum_ref - Incumbente),2)
+            Resumen_out[i,4] = round((Incum_ref - Incumbente)*100/Incumbente,2)
 
         elif dist_forma =='Google':
 
@@ -87,7 +88,8 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
             Resumen_out[i,1] = round(Incum_ref,2)
             Resumen_out[i,2] = round(Incumbente,2)
             #Resumen_out[i,3] = round(Incumbente2,2)
-            Resumen_out[i,3] = round((Incum_ref - Incumbente)*100/Incumbente,2)
+            Resumen_out[i,3] = round((Incum_ref - Incumbente),2)
+            Resumen_out[i,4] = round((Incum_ref - Incumbente)*100/Incumbente,2)
             #Resumen_out[i,5] = round((Incum_ref - Incumbente2)*100/Incumbente2,2)
        
         sol_incumbete_real,orden_cuentas = get_incum(Sol_Incumbente,grupo_k)
@@ -117,13 +119,13 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
     #Resumen resultados
     if dist_forma == 'Haversine':
         Resumen_df = pd.DataFrame(data=Resumen_out,columns=[
-            'Route','ref_cost','Haversine_cost','Haversine_saves(%)'
+            'Route','ref_cost(km)','Haversine_cost(km)','Haversine_saves(km)','Haversine_saves(%)'
             ])
         #print('---Resumen resultados---\n')
         #print(Resumen_df.to_markdown())
     elif dist_forma =='Google':
         Resumen_df = pd.DataFrame(data=Resumen_out,columns=[
-            'Route','ref_cost', 'Google_cost',
+            'Route','ref_cost(km)', 'Google_cost(km/H)', 'Google_saves(km/H)',
             'Google_saves(%)'
             ])
         #print('---Resumen resultados---\n')
