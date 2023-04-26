@@ -37,16 +37,17 @@ def get_distances(origins,customers,typeM,key_googlemaps):
             Time = KM/35 #average speed of 35km/h 
     
         return pd.Series([KM,Time])
-    print('Obtaining distances from API google...')
+    #print('Obtaining distances from API google...')
     gmaps = googlemaps.Client(key=key_googlemaps)
-    start_time = time.time()
+    #start_time = time.time()
     df_f[["distance (Km)","Time (H)"]] = df.apply(get_gmaps_distance, axis=1) #To get distances
     #print("Run time API google:")
     #print("--- %s segundos ---" % (time.time() - start_time))
-    if typeM == 'time':
+    if typeM == 'Time':
         df_f = df_f.pivot_table(index ='origins', columns ='destinations', values =["Time (H)"], sort=False).reset_index()
     else:
         df_f = df_f.pivot_table(index ='origins', columns ='destinations', values =["distance (Km)"], sort=False).reset_index()
+    print(df_f)
     df_f.columns = df_f.columns.droplevel(0)
     df_f = df_f.rename_axis(None, axis=1)
     df_f = df_f.drop(df_f.columns[0], axis=1)
