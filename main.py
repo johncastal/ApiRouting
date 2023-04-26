@@ -14,7 +14,7 @@ async def home():
 
 
 @router.get("/{datos_in}")
-async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,dist_type:str='Haversine',algorithm:str='Genetic',objective:str="Distance",ident:str='prueba',key_googlemaps: Union[str, None] = None):
+async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,dist_type:str='Haversine',algorithm:str='Genetic',objective:str="Distance",ident:str='0',key_googlemaps: Union[str, None] = None):
     datos_in = (datos_in.split(";"))
     data_base = {"coord": datos_in, "parametros" : {"n_clusters":n_clusters,"seed":seed}}
     df1 = pd.DataFrame(data=data_base["coord"],columns=["coord"])
