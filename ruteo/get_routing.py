@@ -11,17 +11,19 @@ from ruteo.Get_incum import get_incum
 
 
 
-def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,ident,key_googlemaps):
+def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,objective,ident,key_googlemaps):
     #Instanciar problema
     #print('iniciando...')
     c = 0 #contador
     coor_ruta = np.zeros((np.shape(grupos)[0]+n_clusters*2,6))
     coor_ruta = np.array(coor_ruta, dtype=object)
 
-    if dist_forma == 'Haversine':
-        Resumen_out = np.zeros((n_clusters,4))
-    elif dist_forma =='Google':
-        Resumen_out = np.zeros((n_clusters,6))
+    #if dist_forma == 'Haversine':
+    #    Resumen_out = np.zeros((n_clusters,4))
+    #elif dist_forma =='Google':
+    #    Resumen_out = np.zeros((n_clusters,4))
+
+    Resumen_out = np.zeros((n_clusters,4))
     Resumen_out[:,0] = np.arange(1,n_clusters+1)
 
     rutas = np.zeros((n_clusters,2),dtype=array)
@@ -53,7 +55,7 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,i
 
         
         #dist_forma='haversine'
-        dist = inst(grupo_k,dist_forma,key_googlemaps,tipo='distance') #tiempo o distancia (haversine, google) - Distancias para solver principal
+        dist = inst(grupo_k,dist_forma,key_googlemaps,objective) #tiempo o distancia (haversine, google) - Distancias para solver principal
         genetico_main = solvers(dist,seed,algoritmo) #se instancia la clase para el solver principal #################
         
 
@@ -71,22 +73,22 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,i
 
         elif dist_forma =='Google':
 
-            dist2 = inst(grupo_k,'Haversine',key_googlemaps,tipo='distance') #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
+            dist2 = inst(grupo_k,'Haversine',key_googlemaps,objective) #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
             
             genetico_ref = solvers(dist2,seed,algoritmo) # Solver para referencia
             Sol_Incumbente,Incumbente,Incum_acumulado = genetico_main.s() #Algoritmo de ruteo
-            Sol_Incumbente2,Incumbente2,Incum_acumulado2 = genetico_ref.s() #Algoritmo de ruteo - Referencia
+            #Sol_Incumbente2,Incumbente2,Incum_acumulado2 = genetico_ref.s() #Algoritmo de ruteo - Referencia
             
             VecinoCercano = solvers(dist2,seed,'VecinoCercano') # Solver para referencia
             Sol_ref,Incum_ref = VecinoCercano.s() #Algoritmo de ruteo de referencia
             
             Incum_ref = Funcion_obj(Sol_ref,dist) #Se recalcula para comparaciones
-            Incumbente2 = Funcion_obj(Sol_Incumbente2,dist) #Se recalcula para comparaciones
+            #Incumbente2 = Funcion_obj(Sol_Incumbente2,dist) #Se recalcula para comparaciones
             Resumen_out[i,1] = round(Incum_ref,2)
             Resumen_out[i,2] = round(Incumbente,2)
-            Resumen_out[i,3] = round(Incumbente2,2)
-            Resumen_out[i,4] = round((Incum_ref - Incumbente)*100/Incumbente,2)
-            Resumen_out[i,5] = round((Incum_ref - Incumbente2)*100/Incumbente2,2)
+            #Resumen_out[i,3] = round(Incumbente2,2)
+            Resumen_out[i,3] = round((Incum_ref - Incumbente)*100/Incumbente,2)
+            #Resumen_out[i,5] = round((Incum_ref - Incumbente2)*100/Incumbente2,2)
        
         sol_incumbete_real,orden_cuentas = get_incum(Sol_Incumbente,grupo_k)
         #print(rutas)
@@ -121,8 +123,8 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,i
         #print(Resumen_df.to_markdown())
     elif dist_forma =='Google':
         Resumen_df = pd.DataFrame(data=Resumen_out,columns=[
-            'Route','ref_cost', 'Dist_google_cost','Haversine_cost',
-            'Google_saves(%)', 'Haversine_saves(%)'
+            'Route','ref_cost', 'Google_cost',
+            'Google_saves(%)'
             ])
         #print('---Resumen resultados---\n')
         #print(Resumen_df.to_markdown())

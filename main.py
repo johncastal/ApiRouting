@@ -14,7 +14,7 @@ async def home():
 
 
 @router.get("/{datos_in}")
-async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,dist_type:str='Haversine',algorithm:str='Genetic',ident:str='prueba',key_googlemaps: Union[str, None] = None):
+async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,dist_type:str='Haversine',algorithm:str='Genetic',objective:str="Distance",ident:str='prueba',key_googlemaps: Union[str, None] = None):
     datos_in = (datos_in.split(";"))
     data_base = {"coord": datos_in, "parametros" : {"n_clusters":n_clusters,"seed":seed}}
     df1 = pd.DataFrame(data=data_base["coord"],columns=["coord"])
@@ -27,7 +27,7 @@ async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,dist_type:str='
     coor_sedes = df_sedes.to_numpy()
     coor_sedes = coor_sedes[:,1:3]
     #Routes building
-    Resumen_df,df_plot,df_rutas = routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_type,algorithm,ident,key_googlemaps)
+    Resumen_df,df_plot,df_rutas = routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_type,algorithm,objective,ident,key_googlemaps)
 
     Resumen_df_json = Resumen_df.to_dict(orient='dict')
     df_plot_json =  df_plot.to_dict(orient='dict')

@@ -41,8 +41,8 @@ def get_distances(origins,customers,typeM,key_googlemaps):
     gmaps = googlemaps.Client(key=key_googlemaps)
     start_time = time.time()
     df_f[["distance (Km)","Time (H)"]] = df.apply(get_gmaps_distance, axis=1) #To get distances
-    print("Run time API google:")
-    print("--- %s segundos ---" % (time.time() - start_time))
+    #print("Run time API google:")
+    #print("--- %s segundos ---" % (time.time() - start_time))
     if typeM == 'time':
         df_f = df_f.pivot_table(index ='origins', columns ='destinations', values =["Time (H)"], sort=False).reset_index()
     else:
