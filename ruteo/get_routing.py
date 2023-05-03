@@ -116,7 +116,7 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
         elif objective == "Time":
             highlights = {"Total_incumbent": "{:.2f}".format(np.sum(Resumen_out[:, 2])) + " Hours",  
                           "Total_saves" :  "{:.2f}".format(np.sum(Resumen_out[:, 3])) + " Hours",
-                          "Mean_distance_cluster" : "{:.2f}".format(np.mean(sede_cluster[:,2])) + " Hours"
+                          "Mean_distance_cluster" : "{:.2f}".format(np.mean(sede_cluster[:,2])) + " Km"
                           }
 
         sol_incumbete_real,orden_cuentas = get_incum(Sol_Incumbente,grupo_k)
