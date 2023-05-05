@@ -12,9 +12,10 @@ from ruteo.Get_incum import get_incum
 
 
 
-def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,objective,ident,key_googlemaps):
+def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,objective,ident,emissions,key_googlemaps):
+    
     #Instanciar problema
-    #print('iniciando...')
+
     c = 0 #contador
     coor_ruta = np.zeros((np.shape(grupos)[0]+n_clusters*2,6))
     coor_ruta = np.array(coor_ruta, dtype=object)
@@ -27,12 +28,11 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
     Resumen_out = np.zeros((n_clusters,5))
     Resumen_out[:,0] = np.arange(1,n_clusters+1)
 
+    Emissions_out = np.zeros((n_clusters,2))
+
     rutas = np.zeros((n_clusters,2),dtype=array)
     rutas[:,0] = np.arange(1,n_clusters+1)
 
-    #progreso = progress(ident) #se inicializa datos de progreso
-    #progreso.set_Iteraciones(0)
-    #progreso.set_Cantidad_distancias(0)
 
    
     sede_grupos = sede_grupos[np.lexsort((sede_grupos[:, 2], sede_grupos[:, 1]))]
@@ -61,27 +61,37 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
         grupo_k[1:,:] = grupos
         grupo_k = grupo_k[grupo_k[:,0] == grupo]
         
-        #print("grupo_k:\n",pd.DataFrame(grupo_k))
-        #cluster_rest(grupo_k,sede_cluster,20)
 
-        #progreso.set_Iteraciones((i)*100/n_clusters)
-        #progreso.set_Cantidad_distancias((np.shape(grupo_k)[0])**2)
 
-        #print('---cluster número: ',i, ' ---')
-        #print('numero de distancias a obtener: ', (np.shape(grupo_k)[0])**2)
-
-        #dist_forma='haversine'
-        dist = inst(grupo_k,dist_forma,key_googlemaps,objective) #tiempo o distancia (haversine, google) - Distancias para solver principal
-        genetico_main = solvers(dist,seed,algoritmo) #se instancia la clase para el solver principal #################
         
         if dist_forma == 'Haversine':
-            dist2 = dist.copy()
-            VecinoCercano = solvers(dist2,seed,'VecinoCercano') # Solver para referencia
-            Sol_Incumbente,Incumbente,Incum_acumulado = genetico_main.s() #Algoritmo de ruteo
+
+            dist,time,dist_bi,M_emissions = inst(grupo_k,dist_forma,key_googlemaps) #tiempo o distancia (haversine, google) - Distancias para solver principal
+
+            if emissions:
+               genetico_main = solvers(dist_bi,seed,algoritmo) #This can mix emissions with distance
+               VecinoCercano = solvers(dist_bi,seed,'VecinoCercano') #This can mix emissions with distance
+            else:
+               if objective == "Distance":
+                   genetico_main = solvers(dist,seed,algoritmo) #It is used to get solution through the distance in km
+                   VecinoCercano = solvers(dist,seed,'VecinoCercano') #It is used to get solution through the distance in km
+               else:
+                   genetico_main = solvers(time,seed,algoritmo) #It is used to get solution through the time in hours
+                   VecinoCercano = solvers(time,seed,'VecinoCercano') #It is used to get solution through the distance in km
+
+            # Solutions
+            Sol_Incumbente,_,_ = genetico_main.s() #Algoritmo de ruteo
+            Sol_ref,_ = VecinoCercano.s() #Algoritmo de ruteo de referencia
             
-            Sol_ref,Incum_ref = VecinoCercano.s() #Algoritmo de ruteo de referencia
-            
-            Incum_ref = Funcion_obj(Sol_ref,dist) #Se recalcula para comparaciones
+            Incum_ref = Funcion_obj(Sol_ref,dist)
+            Incumbente = Funcion_obj(Sol_Incumbente,dist)
+
+            Incum_ref_emissions = Funcion_obj(Sol_ref,M_emissions)
+            Incumbent_emissions = Funcion_obj(Sol_Incumbente,M_emissions)
+
+            Emissions_out[i,0] = Incumbent_emissions
+            Emissions_out[i,1] = Incum_ref_emissions-Incumbent_emissions
+
             Resumen_out[i,1] = round(Incum_ref,2)
             Resumen_out[i,2] = round(Incumbente,2)
             Resumen_out[i,3] = round((Incum_ref - Incumbente),2)
@@ -89,34 +99,51 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
 
         elif dist_forma =='Google':
 
-            dist2 = inst(grupo_k,'Haversine',key_googlemaps,objective) #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
+            dist,time,dist_bi,M_emissions = inst(grupo_k,dist_forma,key_googlemaps) #tiempo o distancia (haversine, google) - Distancias para solver principal
+            dist2,time2,dist_bi2,M_emissions2 = inst(grupo_k,'Haversine',key_googlemaps) #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
             
-            genetico_ref = solvers(dist2,seed,algoritmo) # Solver para referencia
-            Sol_Incumbente,Incumbente,Incum_acumulado = genetico_main.s() #Algoritmo de ruteo
-            #Sol_Incumbente2,Incumbente2,Incum_acumulado2 = genetico_ref.s() #Algoritmo de ruteo - Referencia
+            if emissions:
+                VecinoCercano = solvers(dist_bi2,seed,'VecinoCercano') #This can mix emissions with distance
+            else:
+                if objective == "Distance":
+                    genetico_main = solvers(dist,seed,algoritmo) #It is used to get solution through the distance in km
+                    VecinoCercano = solvers(dist2,seed,'VecinoCercano') #It is used to get solution through the distance in km
+                else:
+                    genetico_main = solvers(time,seed,algoritmo) #It is used to get solution through the time in hours
+                    VecinoCercano = solvers(time2,seed,'VecinoCercano') #It is used to get solution through the distance in km
+
+            # Solutions
+            Sol_Incumbente,_,_ = genetico_main.s() #Algoritmo de ruteo
+            Sol_ref,_ = VecinoCercano.s() #Algoritmo de ruteo de referencia
             
-            VecinoCercano = solvers(dist2,seed,'VecinoCercano') # Solver para referencia
-            Sol_ref,Incum_ref = VecinoCercano.s() #Algoritmo de ruteo de referencia
-            
-            Incum_ref = Funcion_obj(Sol_ref,dist) #Se recalcula para comparaciones
-            #Incumbente2 = Funcion_obj(Sol_Incumbente2,dist) #Se recalcula para comparaciones
+            Incum_ref = Funcion_obj(Sol_ref,dist) 
+            Incumbente = Funcion_obj(Sol_Incumbente,dist)
+
+            Incum_ref_emissions = Funcion_obj(Sol_ref,M_emissions2)
+            Incumbent_emissions = Funcion_obj(Sol_Incumbente,M_emissions)
+
+            Emissions_out[i,0] = Incumbent_emissions
+            Emissions_out[i,1] = round(Incum_ref_emissions-Incumbent_emissions)
+
             Resumen_out[i,1] = round(Incum_ref,2)
             Resumen_out[i,2] = round(Incumbente,2)
-            #Resumen_out[i,3] = round(Incumbente2,2)
             Resumen_out[i,3] = round((Incum_ref - Incumbente),2)
             Resumen_out[i,4] = round((Incum_ref - Incumbente)*100/Incumbente,2)
-            #Resumen_out[i,5] = round((Incum_ref - Incumbente2)*100/Incumbente2,2)
         
         # To get highlights
         if objective == "Distance":
             highlights = {"Total_incumbent": "{:.2f}".format(np.sum(Resumen_out[:, 2])) + " km",  
                           "Total_saves" :  "{:.2f}".format(np.sum(Resumen_out[:, 3])) + " km",
-                          "Mean_distance_cluster" : "{:.2f}".format(np.mean(sede_cluster[:,2])) + " km"
+                          "Mean_distance_cluster" : "{:.2f}".format(np.mean(sede_cluster[:,2])) + " km",
+                          "Total_CO2_emissions" : "{:.2f}".format(np.sum(Emissions_out[:,0])) + "gramsCO2",
+                          "CO2_saves" : "{:.2f}".format(np.sum(Emissions_out[:,1])) + "gramsCO2"
                           }
         elif objective == "Time":
             highlights = {"Total_incumbent": "{:.2f}".format(np.sum(Resumen_out[:, 2])) + " Hours",  
                           "Total_saves" :  "{:.2f}".format(np.sum(Resumen_out[:, 3])) + " Hours",
-                          "Mean_distance_cluster" : "{:.2f}".format(np.mean(sede_cluster[:,2])) + " Km"
+                          "Mean_distance_cluster" : "{:.2f}".format(np.mean(sede_cluster[:,2])) + " Km",
+                          "Total_CO2_emissions" : "{:.2f}".format(np.sum(Emissions_out[:,0])) + "gramsCO2",
+                          "CO2_saves" : "{:.2f}".format(np.sum(Emissions_out[:,1])) + "gramsCO2"
                           }
 
         sol_incumbete_real,orden_cuentas = get_incum(Sol_Incumbente,grupo_k)
