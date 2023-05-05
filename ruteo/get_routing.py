@@ -135,15 +135,15 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
             highlights = {"Total_incumbent": "{:.2f}".format(np.sum(Resumen_out[:, 2])) + " km",  
                           "Total_saves" :  "{:.2f}".format(np.sum(Resumen_out[:, 3])) + " km",
                           "Mean_distance_cluster" : "{:.2f}".format(np.mean(sede_cluster[:,2])) + " km",
-                          "Total_CO2_emissions" : "{:.2f}".format(np.sum(Emissions_out[:,0])) + "gramsCO2",
-                          "CO2_saves" : "{:.2f}".format(np.sum(Emissions_out[:,1])) + "gramsCO2"
+                          "Total_CO2_emissions" : "{:.2f}".format(np.sum(Emissions_out[:,0])) + " gramsCO2",
+                          "CO2_saves" : "{:.2f}".format(np.sum(Emissions_out[:,1])) + " gramsCO2"
                           }
         elif objective == "Time":
             highlights = {"Total_incumbent": "{:.2f}".format(np.sum(Resumen_out[:, 2])) + " Hours",  
                           "Total_saves" :  "{:.2f}".format(np.sum(Resumen_out[:, 3])) + " Hours",
                           "Mean_distance_cluster" : "{:.2f}".format(np.mean(sede_cluster[:,2])) + " Km",
-                          "Total_CO2_emissions" : "{:.2f}".format(np.sum(Emissions_out[:,0])) + "gramsCO2",
-                          "CO2_saves" : "{:.2f}".format(np.sum(Emissions_out[:,1])) + "gramsCO2"
+                          "Total_CO2_emissions" : "{:.2f}".format(np.sum(Emissions_out[:,0])) + " gramsCO2",
+                          "CO2_saves" : "{:.2f}".format(np.sum(Emissions_out[:,1])) + " gramsCO2"
                           }
 
         sol_incumbete_real,orden_cuentas = get_incum(Sol_Incumbente,grupo_k)
