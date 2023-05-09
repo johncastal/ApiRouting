@@ -34,7 +34,7 @@ def get_distances(origins,customers,key_googlemaps):
             Time = (result['rows'][0]['elements'][0]['duration']['value']/3600)
         else:
             KM = haversine(df['origins'][1],df['origins'][0],df['destinations'][1],df['destinations'][0])*1.5
-            Time = KM/35 #average speed of 35km/h 
+            Time = KM/15 #average speed of 15km/h 
     
         return pd.Series([KM,Time])
     #print('Obtaining distances from API google...')

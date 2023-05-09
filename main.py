@@ -30,17 +30,19 @@ async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,
     coor_sedes = df_sedes.to_numpy()
     coor_sedes = coor_sedes[:,1:3]
     #Routes building
-    Resumen_df,df_plot,df_rutas,highlights = routing(grupos,n_clusters,sede_grupos,coor_sedes,
-                                                     seed,dist_type,algorithm,objective,ident,
-                                                     emissions,key_googlemaps)
+    Resumen_df,df_plot,df_rutas,highlights,Emissions_df = routing(grupos,n_clusters,sede_grupos,coor_sedes,
+                                                                seed,dist_type,algorithm,objective,ident,
+                                                                emissions,key_googlemaps)
 
     Resumen_df_json = Resumen_df.to_dict(orient='dict')
     df_plot_json =  df_plot.to_dict(orient='dict')
     df_rutas_json = df_rutas.to_dict(orient='dict')
+    Emissions_df_json = Emissions_df.to_dict(orient='dict')
 
     out = {"summary" : Resumen_df_json,
            "df_plot" : df_plot_json,
            "df_routes" : df_rutas_json,
+           "Emissions_df" : Emissions_df_json,
            "highlights": highlights
            }
 
