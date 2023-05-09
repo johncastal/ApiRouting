@@ -130,16 +130,20 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
     # To get highlights
     if objective == "Distance":
         highlights = {"Total_incumbent": "{:.2f}".format(np.sum(Resumen_out[:, 2])) + " km",  
-                      "Total_saves" :  "{:.2f}".format(np.sum(Resumen_out[:, 3])) + " km",
+                      "Saves_routes" :  "{:.2f}".format(np.sum(Resumen_out[:, 3])) + " km",
+                      "Total_saves(%)" :  "{:.2f}".format(np.sum(Resumen_out[:, 4])) + "%",
                       "Mean_distance_cluster" : "{:.2f}".format(np.mean(sede_cluster[:,2])) + " km",
                       "Total_CO2_emissions" : "{:.2f}".format(np.sum(Emissions_out[:,2])) + " gramsCO2",
+                      "CO2_saves_routes" : "{:.2f}".format(np.sum(Emissions_out[:,3])) + " gramsCO2",
                       "CO2_saves" : "{:.2f}".format(np.sum(Emissions_out[:,4])) + "%"
                       }
     elif objective == "Time":
         highlights = {"Total_incumbent": "{:.2f}".format(np.sum(Resumen_out[:, 2])) + " Hours",  
-                      "Total_saves" :  "{:.2f}".format(np.sum(Resumen_out[:, 3])) + " Hours",
+                      "Saves_routes" :  "{:.2f}".format(np.sum(Resumen_out[:, 3])) + " Hours",
+                      "Total_saves" :  "{:.2f}".format(np.sum(Resumen_out[:, 4])) + "%",
                       "Mean_distance_cluster" : "{:.2f}".format(np.mean(sede_cluster[:,2])) + " Km",
                       "Total_CO2_emissions" : "{:.2f}".format(np.sum(Emissions_out[:,2])) + " gramsCO2",
+                      "CO2_saves_routes" : "{:.2f}".format(np.sum(Emissions_out[:,3])) + " gramsCO2",
                       "CO2_saves" : "{:.2f}".format(np.sum(Emissions_out[:,4])) + "%"
                       }
 
