@@ -24,7 +24,7 @@ def inst(grupo_k,dist_forma,key_googlemaps,):
         for i in range(Numclientes):
             for j in range(Numclientes):
                 dist[i,j] = haversine(Coordenadas[i,1],Coordenadas[i,0],Coordenadas[j,1],Coordenadas[j,0]) #lon,lat
-        time = dist * 35 #35km/h as a average speed
+        time = dist / 15 #15km/h as a average speed
 
 
     
@@ -43,13 +43,14 @@ def inst(grupo_k,dist_forma,key_googlemaps,):
                     delta = abs(elev_1-elev_2)/1000
                     tetha = np.arctan(delta/dist[i,j])
                     alpha = abs(np.sin(tetha) - u * np.cos(tetha))
-                    emissions[i,j] = (dist[i,j]/cpg) * epg * alpha 
+                    emissions[i,j] = (dist[i,j]/cpg) * epg * (1+alpha) 
 
     elif dist_forma == 'Haversine':
         for i in range(Numclientes):
             for j in range(Numclientes): 
                 if dist[i,j] > 0:
-                    emissions[i,j] = (dist[i,j]/cpg) * epg
+                    alpha = 0.1
+                    emissions[i,j] = (dist[i,j]/cpg) * epg * (1+alpha) 
         
     # Generate a unified matrix
 
