@@ -34,7 +34,6 @@ async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,
 
     #weights
     weights = ast.literal_eval(weights)
-    print(weights)
 
     #Routes building
     Resumen_df,df_plot,df_rutas,highlights,Emissions_df = routing(grupos,n_clusters,sede_grupos,coor_sedes,
