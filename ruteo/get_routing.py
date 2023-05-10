@@ -12,7 +12,7 @@ from ruteo.Get_incum import get_incum
 
 
 
-def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,objective,ident,emissions,key_googlemaps):
+def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,objective,ident,emissions,weights,key_googlemaps):
     
     #Instanciar problema
 
@@ -62,8 +62,8 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
         grupo_k[1:,:] = grupos
         grupo_k = grupo_k[grupo_k[:,0] == grupo]
         
-        dist,time,dist_bi,M_emissions = inst(grupo_k,dist_forma,key_googlemaps) #tiempo o distancia (haversine, google) - Distancias para solver principal
-        dist2,time2,dist_bi2,_ = inst(grupo_k,'Haversine',key_googlemaps) #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
+        dist,time,dist_bi,M_emissions = inst(grupo_k,dist_forma,weights,key_googlemaps) #tiempo o distancia (haversine, google) - Distancias para solver principal
+        dist2,time2,dist_bi2,_ = inst(grupo_k,'Haversine',weights,key_googlemaps) #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
 
         if emissions:
                genetico_main = solvers(dist_bi,seed,algoritmo) #This can mix emissions with distance

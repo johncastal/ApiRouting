@@ -3,6 +3,7 @@ import pandas as pd
 from ruteo.clusterizacion import clusterizacion
 from ruteo.get_routing import routing
 from typing import Union
+import ast
 
 app = FastAPI()
 
@@ -16,7 +17,8 @@ async def home():
 @router.get("/{datos_in}")
 async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,
                     dist_type:str='Haversine',algorithm:str='Genetic',objective:str="Distance",
-                    ident:str='0',key_googlemaps: Union[str, None] = None, emissions:bool=False
+                    ident:str='0',key_googlemaps: Union[str, None] = None, emissions:bool=False,
+                    weights:str="(0.5,0.5)"
                     ):
     datos_in = (datos_in.split(";"))
     data_base = {"coord": datos_in, "parametros" : {"n_clusters":n_clusters,"seed":seed}}
@@ -29,10 +31,14 @@ async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,
     grupos,sede_grupos,df_sedes = clusterizacion(df,n_clusters,seed)
     coor_sedes = df_sedes.to_numpy()
     coor_sedes = coor_sedes[:,1:3]
+
+    #weights
+    weights = ast.literal_eval(weights)
+
     #Routes building
     Resumen_df,df_plot,df_rutas,highlights,Emissions_df = routing(grupos,n_clusters,sede_grupos,coor_sedes,
                                                                 seed,dist_type,algorithm,objective,ident,
-                                                                emissions,key_googlemaps)
+                                                                emissions,weights,key_googlemaps)
 
     Resumen_df_json = Resumen_df.to_dict(orient='dict')
     df_plot_json =  df_plot.to_dict(orient='dict')

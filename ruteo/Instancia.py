@@ -4,7 +4,7 @@ from ruteo.haversine import haversine
 from ruteo.elevation import elevation
 
 
-def inst(grupo_k,dist_forma,key_googlemaps,):
+def inst(grupo_k,dist_forma,weights,key_googlemaps,):
     Numclientes = np.shape(grupo_k)[0]
     Coordenadas = np.zeros((Numclientes,2))
     Coordenadas[:,0] = grupo_k[:,3] #latitud
@@ -65,7 +65,7 @@ def inst(grupo_k,dist_forma,key_googlemaps,):
     normalized_dist = (dist - min_value_dist) / (max_value_dist - min_value_dist)
     normalized_emissions = (emissions - min_value_emissions) / (max_value_emissions - min_value_emissions)
 
-    dist_bi = (normalized_dist * 0.5) + (normalized_emissions * 0.5)
+    dist_bi = (normalized_dist * weights[0]) + (normalized_emissions * weights[1])
 
     
     return dist,time,dist_bi,emissions
