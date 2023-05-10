@@ -40,7 +40,9 @@ def inst(grupo_k,dist_forma,key_googlemaps,):
             for j in range(Numclientes): 
                 if dist[i,j] > 0:
                     elev_2 = elevation(Coordenadas[j,1],Coordenadas[j,0],key_googlemaps) #lon,lat
-                    delta = abs(elev_1-elev_2)/1000
+                    delta = (elev_1-elev_2)/1000
+                    if delta < 0:
+                        delta=0
                     tetha = np.arctan(delta/dist[i,j])
                     alpha = abs(np.sin(tetha) - u * np.cos(tetha))
                     emissions[i,j] = (dist[i,j]/cpg) * epg * (1+alpha) 
