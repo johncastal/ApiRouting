@@ -35,11 +35,16 @@ def inst(grupo_k,dist_forma,weights,key_googlemaps,):
     u = 0.015 # friction coeficient
 
     if dist_forma == 'Google':
+        # To get elevation vector
+        elev = np.zeros((Numclientes))
         for i in range(Numclientes):
-            elev_1 = elevation(Coordenadas[i,1],Coordenadas[i,0],key_googlemaps) #lon,lat
+            elev[i] = elevation(Coordenadas[i,1],Coordenadas[i,0],key_googlemaps) #lon,lat
+
+        for i in range(Numclientes):
+            elev_1 = elev[i] #lon,lat
             for j in range(Numclientes): 
                 if dist[i,j] > 0:
-                    elev_2 = elevation(Coordenadas[j,1],Coordenadas[j,0],key_googlemaps) #lon,lat
+                    elev_2 =elev[j] #lon,lat
                     delta = (elev_1-elev_2)/1000
                     if delta < 0:
                         delta=0
