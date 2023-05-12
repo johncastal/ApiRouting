@@ -18,7 +18,7 @@ async def home():
 async def read_item(datos_in:str, n_clusters:int=1,seed:int=None,
                     dist_type:str='Haversine',algorithm:str='Genetic',objective:str="Distance",
                     ident:str='0',key_googlemaps: Union[str, None] = None, emissions:bool=False,
-                    weights:str="(0.5,0.5)"
+                    weights:str="(1,0)"
                     ):
     datos_in = (datos_in.split(";"))
     data_base = {"coord": datos_in, "parametros" : {"n_clusters":n_clusters,"seed":seed}}

@@ -63,11 +63,14 @@ def routing(grupos,n_clusters,sede_grupos,coor_sedes,seed,dist_forma,algoritmo,o
         grupo_k = grupo_k[grupo_k[:,0] == grupo]
         
         dist,time,dist_bi,M_emissions = inst(grupo_k,dist_forma,weights,key_googlemaps) #tiempo o distancia (haversine, google) - Distancias para solver principal
-        dist2,time2,_,_ = inst(grupo_k,'Haversine',weights,key_googlemaps) #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
-
+        dist2,time2,dist_bi2,_ = inst(grupo_k,'Haversine',weights,key_googlemaps) #tiempo o distancia (haversine, google) - Distancias para Solver de comparacion
+        print('emissions:', emissions)
+        print('objective:', objective)
+        print('dist:', dist)
         if emissions:
-               genetico_main = solvers(dist_bi,seed,algoritmo) #This can mix emissions with distance
-               VecinoCercano = solvers(dist_bi,seed,'VecinoCercano') #This can mix emissions with distance
+            print('dist_bi:', dist_bi)
+            genetico_main = solvers(dist_bi,seed,algoritmo) #This can mix emissions with distance
+            VecinoCercano = solvers(dist_bi2,seed,'VecinoCercano') #This can mix emissions with distance
         else:
             if objective == "Distance":
                 genetico_main = solvers(dist,seed,algoritmo) #It is used to get solution through the distance in km
