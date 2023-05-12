@@ -9,14 +9,15 @@ def genetico(dist,seed):
     #Definición de parámetros del algoritmo
     np.random.seed(seed)
     
+    print(dist)
     Numclientes = np.shape(dist)[0]
     
     # definición de parámetros de algoritmo
     Tam_pob = 50    # tamaño de la población
-    k = 30          # Tamaño de las muestra para la selección
+    k = 3          # Tamaño de las muestra para la selección
     #Tc = 0.9       # Tasa de cruzamiento
     Tm = 0.9        # Tasa de mutación
-    MaxGen = (Numclientes**2)*10  # Máximo de iteraciones
+    MaxGen = (Numclientes**2)*100  # Máximo de iteraciones
     Reinicio = 1000 # Número de iteraciones para reiniciar población
     # contadores
     Contador_incumbentes = 0
