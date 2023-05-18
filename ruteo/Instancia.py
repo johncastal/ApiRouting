@@ -34,30 +34,32 @@ def inst(grupo_k,dist_forma,weights,key_googlemaps,):
     epg = 10.180 #grams/gallon
     u = 0.015 # friction coeficient
 
-    if dist_forma == 'Google':
-        # To get elevation vector
-        elev = np.zeros((Numclientes))
-        for i in range(Numclientes):
-            elev[i] = elevation(Coordenadas[i,1],Coordenadas[i,0],key_googlemaps) #lon,lat
+    # To get elevation vector
+    elev = np.zeros((Numclientes))
+    for i in range(Numclientes):
+        elev[i] = elevation(Coordenadas[i,1],Coordenadas[i,0],key_googlemaps) #lon,lat
 
+    if dist_forma == 'Google':
         for i in range(Numclientes):
             elev_1 = elev[i] #lon,lat
             for j in range(Numclientes): 
                 if dist[i,j] > 0:
                     elev_2 =elev[j] #lon,lat
                     delta = (elev_1-elev_2)/1000
-                    #if delta < 0:
-                    #    delta=0
                     tetha = np.arctan(delta/dist[i,j])
                     alpha = np.sin(tetha) - u * np.cos(tetha)
                     emissions[i,j] = (dist[i,j]/cpg) * epg * (1+alpha) 
 
     elif dist_forma == 'Haversine':
         for i in range(Numclientes):
+            elev_1 = elev[i] #lon,lat
             for j in range(Numclientes): 
                 if dist[i,j] > 0:
-                    alpha = 0.03
-                    emissions[i,j] = (dist[i,j]/cpg) * epg * (1+alpha) 
+                    elev_2 =elev[j] #lon,lat
+                    delta = (elev_1-elev_2)/1000
+                    tetha = np.arctan(delta/dist[i,j])
+                    alpha = np.sin(tetha) - u * np.cos(tetha)
+                    emissions[i,j] = (dist[i,j]/cpg) * epg * (1+alpha) * 1.2
         
     # Generate a unified matrix
 
@@ -67,12 +69,12 @@ def inst(grupo_k,dist_forma,weights,key_googlemaps,):
     min_value_emissions = np.min(emissions)
     max_value_emissions = np.max(emissions)
 
-    #normalized_dist = (dist - min_value_dist) / (max_value_dist - min_value_dist)
-    #normalized_emissions = (emissions - min_value_emissions) / (max_value_emissions - min_value_emissions)
+    normalized_dist = (dist - min_value_dist) / (max_value_dist - min_value_dist)
+    normalized_emissions = (emissions - min_value_emissions) / (max_value_emissions - min_value_emissions)
 
-    #dist_bi = (normalized_dist * weights[0]) + (normalized_emissions * weights[1])
+    dist_bi = (normalized_dist * weights[0]) + (normalized_emissions * weights[1])
 
-    dist_bi = (dist * weights[0]) + (emissions * weights[1])
+    #dist_bi = (dist * weights[0]) + (emissions * weights[1])
 
     
     return dist,time,dist_bi,emissions
