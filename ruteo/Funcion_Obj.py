@@ -1,7 +1,7 @@
 import numpy as np
 
 def Funcion_obj(Hijo,dist):
-    #Calcula la función objetivo de una solución
+    #Calcula la funcion objetivo de una solucion
 
     F_obj = 0;
     NumClientes = np.shape(Hijo)[0]

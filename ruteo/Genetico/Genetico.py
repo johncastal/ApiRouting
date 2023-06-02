@@ -4,20 +4,20 @@ from ruteo.Funcion_Obj import Funcion_obj
 from ruteo.Genetico.SeleccionPadres import SeleccionPadres
 from ruteo.Genetico.Cruzamiento import Cruzamiento
 from ruteo.Genetico.Mutacion  import Mutacion
+from ruteo.Genetico.opt_operator import opt_operator
 
 def genetico(dist,seed):
     #Definición de parámetros del algoritmo
     np.random.seed(seed)
     
-    print(dist)
     Numclientes = np.shape(dist)[0]
     
     # definición de parámetros de algoritmo
-    Tam_pob = 50    # tamaño de la población
+    Tam_pob = 10    # tamaño de la población
     k = 3          # Tamaño de las muestra para la selección
     #Tc = 0.9       # Tasa de cruzamiento
     Tm = 0.9        # Tasa de mutación
-    MaxGen = (Numclientes**2)*100  # Máximo de iteraciones
+    MaxGen = (Numclientes**2)  # Máximo de iteraciones
     Reinicio = 1000 # Número de iteraciones para reiniciar población
     # contadores
     Contador_incumbentes = 0
@@ -74,7 +74,10 @@ def genetico(dist,seed):
                 return 0,0,0
         else:
             Hijo_final = Hijo;
-   
+        
+        # Mejoramiento Or-Opt
+        Hijo_final = opt_operator(Hijo_final, dist)
+
         F_obj_hijo_final = Funcion_obj(Hijo_final,dist)
 
         #Paso 6: Ingreso a la población
@@ -111,7 +114,7 @@ def genetico(dist,seed):
     Incum_acumulado = Incum_acumulado[0:ind,:]
     
 
-    return Sol_Incumbente,Incumbente,Incum_acumulado
+    return Sol_Incumbente,Incumbente
     
 
 
